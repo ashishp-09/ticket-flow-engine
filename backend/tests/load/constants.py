@@ -1,0 +1,4 @@
+MIN_DELAY = 0.001
+MAX_DELAY = 0.01
+
+BASE_API_URL = "/api/v1"
