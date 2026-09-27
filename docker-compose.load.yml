@@ -1,0 +1,44 @@
+x-locust-env: &locust-env
+  METRICS_TOKEN: $METRICS_TOKEN
+  TESTING: false
+  DB_USER: $PG_USER
+  DB_PASSWORD: $PG_PASSWORD
+  DB_NAME: $PG_DB
+  DB_HOST: db
+  DB_PORT: 5432
+  REDIS_HOST: redis
+  REDIS_PORT: 6379
+  REDIS_DB: 0
+  JWT_SECRET_KEY: $JWT_SECRET_KEY
+  MAIL_USERNAME: $MAIL_USERNAME
+  MAIL_PASSWORD: $MAIL_PASSWORD
+  MAIL_FROM: $MAIL_FROM
+  MAIL_PORT: $MAIL_PORT
+  MAIL_SERVER: $MAIL_SERVER
+  MAIL_STARTTLS: $MAIL_STARTTLS
+  MAIL_SSL_TLS: $MAIL_SSL_TLS
+  MAIL_USE_CREDENTIALS: $MAIL_USE_CREDENTIALS
+  MAIL_VALIDATE_CERTS: $MAIL_VALIDATE_CERTS
+  PYTHONUNBUFFERED: $PYTHONUNBUFFERED
+  LOCUST_PROCESSES: $LOCUST_PROCESSES
+  PASSWORD_ITERATIONS: $PASSWORD_ITERATIONS
+
+services:
+  locust:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: load-tests
+    container_name: load_test_runner
+    environment:
+      <<: *locust-env
+      LOCUST_SKIP_MONKEY_PATCH: 1
+    ports:
+      - "${LOCUST_PORT:-8089}:8089"
+    command: locust -f tests/load/locustfile.py --host http://api:8000
+    networks:
+      - backend_network
+
+
+networks:
+  backend_network:

@@ -1,0 +1,35 @@
+x-nginx-end: &nginx_env
+  DOMAIN: $DOMAIN
+
+x-logging: &default_logging
+  driver: "json-file"
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  webserver:
+    image: nginx:1.27-alpine
+    container_name: nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    environment: *nginx_env
+    volumes:
+      - ./nginx.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    networks:
+      - frontend_network
+    depends_on:
+      - api
+
+  api:
+    logging: *default_logging
+
+volumes:
+  postgres_data:
+
+networks:
+  frontend_network:
+  backend_network:

@@ -1,0 +1,52 @@
+x-test-db-env: &test_db_env
+  POSTGRES_USER: $TEST_PG_USER
+  POSTGRES_PASSWORD: $TEST_PG_PASSWORD
+  POSTGRES_DB: $TEST_PG_DB
+
+x-tests-env: &tests_env
+  TESTING: true
+  DB_USER: $TEST_PG_USER
+  DB_PASSWORD: $TEST_PG_PASSWORD
+  DB_NAME: $TEST_PG_DB
+  DB_HOST: test_db
+  DB_PORT: 5432
+  JWT_SECRET_KEY: $TEST_JWT_SECRET_KEY
+
+services:
+  test_db:
+    image: postgres:16.3-alpine3.20
+    container_name: db_test
+    environment: *test_db_env
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  tests:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: tests
+    container_name: test_runner
+    environment: *tests_env
+    command: sh -c "alembic upgrade head && pytest --color=yes --cov=src tests/"
+    depends_on:
+      test_db:
+        condition: service_healthy
+
+  lint:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: lint
+    container_name: linter
+    volumes:
+      - ./backend:/backend
+      - /backend/.venv
+    command: sh -c "ruff check --fix . && ruff format . && mypy ."
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
