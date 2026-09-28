@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отмена заказа</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333333; margin: 0; padding: 20px; background-color: #f9f9f9;">
+    <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 30px; border-radius: 8px; border: 1px solid #e0e0e0;">
+
+        <h2 style="color: #c0392b; margin-top: 0; border-bottom: 2px solid #e74c3c; padding-bottom: 10px;">
+            Уведомление об отмене заказа
+        </h2>
+
+        <p style="font-size: 16px;">
+            Здравствуйте, <strong>{{ order.user_email }}</strong>!
+        </p>
+
+        <p style="font-size: 15px;">Ваш заказ <strong>#{{ order.order_id }}</strong> на мероприятие <strong>«{{ order.event_title }}»</strong> был отменен.</p>
+
+        <div style="background-color: #fdf7f7; border-left: 4px solid #e74c3c; padding: 15px; margin: 20px 0; border-radius: 4px;">
+            <p style="margin: 0; font-size: 14px; color: #555;">
+                Забронированные билеты были возвращены в продажу.
+                {% if order.refund_issued %}
+                Возврат средств на сумму <strong>{{ "%.2f"|format(order.total_price) }} руб.</strong> успешно инициирован и поступит на ваш счет в течение нескольких рабочих дней.
+                {% endif %}
+            </p>
+        </div>
+
+        <p style="font-size: 14px; color: #7f8c8d; margin-top: 30px; border-top: 1px solid #e0e0e0; padding-top: 15px; text-align: center;">
+            Это автоматическое уведомление. Пожалуйста, не отвечайте на него.
+        </p>
+    </div>
+</body>
+</html>

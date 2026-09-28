@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Cancelled</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333333; margin: 0; padding: 20px; background-color: #f9f9f9;">
+    <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 30px; border-radius: 8px; border: 1px solid #e0e0e0;">
+
+        <h2 style="color: #c0392b; margin-top: 0; border-bottom: 2px solid #e74c3c; padding-bottom: 10px;">
+            Order Cancellation Notice
+        </h2>
+
+        <p style="font-size: 16px;">
+            Hello, <strong>{{ order.user_email }}</strong>!
+        </p>
+
+        <p style="font-size: 15px;">Your order <strong>#{{ order.order_id }}</strong> for <strong>{{ order.event_title }}</strong> has been cancelled.</p>
+
+        <div style="background-color: #fdf7f7; border-left: 4px solid #e74c3c; padding: 15px; margin: 20px 0; border-radius: 4px;">
+            <p style="margin: 0; font-size: 14px; color: #555;">
+                Any reserved tickets have been released back into available inventory.
+                {% if order.refund_issued %}
+                A refund of <strong>${{ "%.2f"|format(order.total_price) }}</strong> has been initiated and will appear on your original payment method in 3-5 business days.
+                {% endif %}
+            </p>
+        </div>
+
+        <p style="font-size: 14px; color: #7f8c8d; margin-top: 30px; border-top: 1px solid #e0e0e0; padding-top: 15px; text-align: center;">
+            This is an automated notification. Please do not reply directly to this email.
+        </p>
+    </div>
+</body>
+</html>
