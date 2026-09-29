@@ -2,7 +2,7 @@
 name = "ticket-flow-engine"
 version = "0.0.1"
 description = "A system for booking event tickets. It allows organizers to create their own events and add tickets for them, while users can easily book and pay for them."
-requires-python = ">=3.14"
+requires-python = ">=3.13"
 dependencies = [
     "fastapi==0.135.1",
     "fastapi-mail==1.6.5",
@@ -51,7 +51,7 @@ filterwarnings = [
 addopts = "--import-mode=importlib"
 
 [tool.mypy]
-python_version = "3.14"
+python_version = "3.13"
 ignore_missing_imports = true
 exclude = ["alembic/"]
 explicit_package_bases = true
