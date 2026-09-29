@@ -1,0 +1,20 @@
+groups:
+  - name: ticketflow_alerts
+    rules:
+      - alert: HighErrorRate
+        expr: sum(rate(http_requests_total{status=~"5.."}[5m])) / sum(rate(http_requests_total[5m])) * 100 > 5
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High 5xx error rate detected on TicketFlow Engine"
+          description: "Over 5% of all HTTP requests resulted in 5xx status codes in the last 5 minutes."
+
+      - alert: ElevatedCheckoutLatency
+        expr: histogram_quantile(0.95, sum(rate(ticketflow_checkout_duration_seconds_bucket[5m])) by (le)) > 2.0
+        for: 3m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Payment checkout p95 latency is above 2 seconds"
+          description: "Checkout latency has exceeded 2s for 3 consecutive minutes."
