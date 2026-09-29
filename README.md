@@ -1,5 +1,10 @@
 # TicketFlow Engine - Event & Ticket Management Backend
 
+[![CI Pipeline](https://img.shields.io/badge/CI-GitHub_Actions-blue.svg)](.github/workflows/ci.yml)
+[![Python](https://img.shields.io/badge/Python-3.13-informational.svg)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/Framework-FastAPI-green.svg)](https://fastapi.tiangolo.com/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 Asynchronous backend package for event scheduling and concurrent ticket sales. Built with Python using Clean Architecture principles, Data Mapper Pattern (Thin Repositories), and a custom Fluent API Query Builder.
 
 The system features advanced asynchronous task queuing, strict data validation pipelines, infrastructure monitoring dashboards, and security isolation designed to handle high-load traffic during peak ticket sales windows.
@@ -10,12 +15,15 @@ The system features advanced asynchronous task queuing, strict data validation p
 * **Custom Fluent API Query Builder:** Features a robust DSL abstraction layer built on top of `RepositoryQuery`. It enables complex chainable operations (`.filter()`, `.update()`, `.delete()`, `.get()`, `.paginate()`) directly within the Service layer, ensuring 100% database engine swapability.
 * **ORM-Agnostic Relationship Loading:** Advanced eager-loading engines (`with_joined`, `with_selectin`) accept standardized nested strings using double underscores (`items__category__event`) to resolve deep relation loops, hiding raw ORM attributes from business logic.
 * **Distributed Idempotency Layer:** Real-time protection for financial and critical endpoints (`/pay`, `/book`) using atomic distributed locking and response-caching via a custom API decorator backed by Redis.
+* **Sliding Window Rate Limiter:** High-performance rate limiting middleware preventing brute-force login attempts and DDoS attacks on checkout/check-in routes.
 * **Cartesian Product Elimination:** Specialized subquery optimization utilizing strict `IN` array matching for nested updates and deletions, guaranteeing maximum execution speed on PostgreSQL without creating relational cartesian locks.
 * **Asynchronous Background Processing:** Native integration with TaskIQ for non-blocking task orchestration and scheduled lock-releases for expired, unpaid ticket reservations.
 * **High-Performance Telemetry System:** Real-time event view counter engine powered by memory-efficient Redis HyperLogLog (`PFADD`, `PFCOUNT`) structures, ensuring fast deduplication of unique visitor interactions.
 * **Production Monitoring Stack:** Native Prometheus metrics engine paired with Grafana dashboards to track latency percentiles, error rates, and request throughput in real time.
-* **Comprehensive Integration Testing:** Automated testing suite leveraging TaskIQ in-memory scheduling running in `await_inplace` mode to catch side-effects within a single structured `asyncio.TaskGroup` lifecycle.
+* **Comprehensive Integration Testing & CI:** Automated GitHub Actions workflows executing linters (Ruff, Mypy), dependency vulnerability audits, and test suites with code coverage reporting.
 * **Delayed Data Processing Via a Queue**: Parts of the system that do not require an immediate response to the user are processed via an Apache Kafka queue - this helps reduce the load on the server and database.
+* **Promotional Discount Engine:** Integrated voucher validation system supporting percentage-based and fixed-amount price deductions with redemption quota limits.
+* **Organizer Analytics & Data Export:** Real-time event sales summaries, attendee check-in rates, and instant CSV attendee list exports for event organizers.
 
 ## Tech Stack
 

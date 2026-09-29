@@ -1,0 +1,130 @@
+{
+  "info": {
+    "name": "TicketFlow Engine API",
+    "_postman_id": "8b51d8b7-6f19-4a90-8d59-873b22cfc1a2",
+    "description": "Production API Collection for TicketFlow Engine event management, booking, tickets, and payment gateway.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health & Diagnostics",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/health",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "health"]
+            }
+          }
+        },
+        {
+          "name": "Prometheus Metrics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{metrics_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/metrics",
+              "host": ["{{base_url}}"],
+              "path": ["metrics"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Authentication & Users",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"username\": \"testuser\",\n  \"password\": \"StrongPass123!\"\n}"
+            },
+            "url": {"raw": "{{base_url}}/api/v1/auth/register", "host": ["{{base_url}}"], "path": ["api", "v1", "auth", "register"]}
+          }
+        },
+        {
+          "name": "Login User",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"StrongPass123!\"\n}"
+            },
+            "url": {"raw": "{{base_url}}/api/v1/auth/login", "host": ["{{base_url}}"], "path": ["api", "v1", "auth", "login"]}
+          }
+        },
+        {
+          "name": "Get Current Profile (Me)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{jwt_token}}"}],
+            "url": {"raw": "{{base_url}}/api/v1/users/me", "host": ["{{base_url}}"], "path": ["api", "v1", "users", "me"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orders & Payments",
+      "item": [
+        {
+          "name": "Create Checkout Session",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{jwt_token}}"}],
+            "url": {"raw": "{{base_url}}/api/v1/orders/1/checkout?success_url=https://app.example.com/success&cancel_url=https://app.example.com/cancel", "host": ["{{base_url}}"], "path": ["api", "v1", "orders", "1", "checkout"]}
+          }
+        },
+        {
+          "name": "Cancel Order & Refund",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{jwt_token}}"}],
+            "url": {"raw": "{{base_url}}/api/v1/orders/1/cancel", "host": ["{{base_url}}"], "path": ["api", "v1", "orders", "1", "cancel"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tickets & Check-in",
+      "item": [
+        {
+          "name": "Check-in Ticket",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{jwt_token}}"}],
+            "url": {"raw": "{{base_url}}/api/v1/tickets/1/check-in", "host": ["{{base_url}}"], "path": ["api", "v1", "tickets", "1", "check-in"]}
+          }
+        },
+        {
+          "name": "Transfer Ticket",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{jwt_token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"target_user_id\": 2\n}"
+            },
+            "url": {"raw": "{{base_url}}/api/v1/tickets/1/transfer", "host": ["{{base_url}}"], "path": ["api", "v1", "tickets", "1", "transfer"]}
+          }
+        }
+      ]
+    }
+  ]
+}
