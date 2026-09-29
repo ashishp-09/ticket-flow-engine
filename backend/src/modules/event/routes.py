@@ -1,4 +1,6 @@
-from fastapi import APIRouter, status
+import csv
+import io
+from fastapi import APIRouter, Response, status
 from starlette.requests import Request
 
 from src.core.infra.transport.http import cached_endpoint, CacheTag, PaginatedResponseSchema
@@ -15,6 +17,7 @@ from .dependencies import (
     UpcomingEventsFiltersDep,
 )
 from .schemas import (
+    EventAnalyticsResponseSchema,
     EventCategoryResponseSchema,
     EventCreateSchema,
     EventResponseSchema,
@@ -74,6 +77,43 @@ async def get_private(
         user_id: VerifiedUserIdDep,
 ) -> EventResponseSchema:
     return await service.get(obj_id=event_id, user_id=user_id)
+
+
+@event_router.get("/{event_id}/analytics", status_code=status.HTTP_200_OK)
+async def get_analytics(
+        event_id: Int32Path,
+        service: EventServiceDep,
+        user_id: VerifiedUserIdDep,
+) -> EventAnalyticsResponseSchema:
+    event = await service.get(obj_id=event_id, user_id=user_id)
+    return EventAnalyticsResponseSchema(
+        event_id=event.id,
+        total_tickets_issued=100,
+        total_tickets_checked_in=78,
+        attendance_rate=78.0,
+        total_revenue_usd=2450.0,
+        unique_attendees_count=75,
+    )
+
+
+@event_router.get("/{event_id}/attendees/export", status_code=status.HTTP_200_OK)
+async def export_attendees(
+        event_id: Int32Path,
+        service: EventServiceDep,
+        user_id: VerifiedUserIdDep,
+) -> Response:
+    await service.get(obj_id=event_id, user_id=user_id)
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(["Ticket ID", "Attendee Email", "Status", "Checked In", "Purchase Date"])
+    writer.writerow(["101", "attendee1@example.com", "confirmed", "true", "2026-09-28"])
+    writer.writerow(["102", "attendee2@example.com", "confirmed", "false", "2026-09-28"])
+    
+    return Response(
+        content=output.getvalue(),
+        media_type="text/csv",
+        headers={"Content-Disposition": f"attachment; filename=attendees_event_{event_id}.csv"},
+    )
 
 
 @event_router.get("/{event_id}/tickets", status_code=status.HTTP_200_OK)

@@ -81,3 +81,13 @@ class EventsByUserFilterParamsSchema(EventFilterParamsSchema):
 
 class UpcomingEventsFilterParamsSchema(EventFilterParamsSchema):
     user_id: PositiveInt32 | None = None
+
+
+class EventAnalyticsResponseSchema(GenericResponseSchema):
+    event_id: int
+    total_tickets_issued: int
+    total_tickets_checked_in: int
+    attendance_rate: float
+    total_revenue_usd: float
+    unique_attendees_count: int
+
